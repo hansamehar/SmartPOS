@@ -1,0 +1,53 @@
+    a{
+        color: #15333D;
+        transition: background-color 0.3s ease;
+    }
+    a:hover{
+    background-color:rgba(21, 51, 61, 0.5);
+    /* color: #d4edda; */
+    padding:0px;
+    margin-left:0px;
+    
+    }
+    a.active{
+    background-color:#15333D;
+    color: #d4edda;
+    
+    }
+    /* a:focus{
+    background-color:#15333D;
+    color: #d4edda;
+
+    } */
+    .sidemenu{
+        transition: width 0.3s ease;
+    }
+    .logo{
+        font-family: "Almendra SC", serif;
+    }
+
+  @media (max-width: 768px) {
+    .sidemenu{
+        width: 60px;
+        text-align: center;
+    }
+    .text{
+        display: none;
+    }
+    .label{
+        display: none;
+    }
+    .icon{
+        font-size: 25px;
+        margin: 25px 0px 25px 0px;
+    }
+  }
+ 
+  @media (min-width: 768px) {
+    .sidemenu{
+        width: 250px;
+    }
+    i{
+        padding-right: 10px;
+    }
+  }

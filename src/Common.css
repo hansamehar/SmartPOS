@@ -1,0 +1,25 @@
+.maindiv{
+  transition: width 0.3s ease;
+}
+table {
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+ 
+}
+td{
+  color: #15333D;
+}
+
+@media (max-width: 768px) {
+    .maindiv{
+      padding-left: 76px;
+    }
+    
+}
+ 
+  @media (min-width: 768px) {
+    .maindiv{
+        padding-left: 266px;
+    }
+  }

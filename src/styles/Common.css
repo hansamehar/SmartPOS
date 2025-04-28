@@ -1,0 +1,27 @@
+.maindiv {
+  position: absolute;
+  background-color: #f3f4f1  ;
+  width: 100%;
+  transition: width 0.3s ease;
+  min-height: 100vh;
+  padding: 10px;
+}
+.table td {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .maindiv {
+    padding-left: 80px;
+  }
+}
+
+@media (min-width: 768px) {
+  .maindiv {
+    padding-left: 220px;
+  }
+}

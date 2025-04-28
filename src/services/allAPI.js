@@ -1,44 +1,60 @@
-import commonAPI from "./commonAPI"
-import serverURL from "./serverURL"
+import commonAPI from "./commonAPI";
+import serverURL from "./serverURL";
+
+export const loginAPI = async (reqBody) => {
+  return await commonAPI("POST", `${serverURL}/login`, reqBody);
+};
+export const addUserAPI = async (reqBody, reqHeader) => {
+  return await commonAPI("POST", `${serverURL}/adduser`, reqBody, reqHeader);
+};
+export const getUserAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/getuser`, {}, reqHeader);
+};
+export const deleteUserAPI = async (id) => {
+  return await commonAPI("DELETE", `${serverURL}/user/${id}/delete`, {});
+};
 
 
+export const addProductAPI = async (reqBody, reqHeader) => {
+  return await commonAPI("POST", `${serverURL}/addproduct`, reqBody, reqHeader);
+};
+export const getProductAPI = async (searchkey) => {
+  return await commonAPI(
+    "GET",
+    `${serverURL}/getproduct?search=${searchkey}`,
+    {}
+  );
+};
+export const editProductAPI = async (reqBody, reqHeader, id) => {
+  return await commonAPI(
+    "PUT",
+    `${serverURL}/products/${id}/update`,
+    reqBody,
+    reqHeader
+  );
+};
 
-export const saveProductAPI=async(productDetails)=>{
-    return await commonAPI(`POST`,`${serverURL}/allProducts`,productDetails)
-}
-export const getProductAPI=async()=>{
-    return await commonAPI(`GET`,`${serverURL}/allProducts`,"")
-}
-export const geteditProductAPI=async(id)=>{
-    return await commonAPI(`GET`,`${serverURL}/allProducts/${id}`,"")
-}
-export const removeProductAPI=async(id)=>{
-    return await commonAPI(`DELETE`,`${serverURL}/allProducts/${id}`,{})
-}
-export const updateProductAPI=async(productDetails)=>{
-    return await commonAPI('PUT',`${serverURL}/allProducts/${productDetails.id}`,productDetails)
-}
-
-
-export const saveCategoryAPI=async(categoryDetails)=>{
-    return await commonAPI(`POST`,`${serverURL}/categories`,categoryDetails)
-}
-export const getcategoryAPI=async()=>{
-    return await commonAPI(`GET`,`${serverURL}/categories`,"")
-}
-export const removeCategoryAPI=async(id)=>{
-    return await commonAPI(`DELETE`,`${serverURL}/categories/${id}`,{})
-}
-
-export const saveSaleAPI=async(salesDetails)=>{
-    return await commonAPI(`POST`,`${serverURL}/sales`,salesDetails)
-}
-export const getSaleAPI=async()=>{
-    return await commonAPI(`GET`,`${serverURL}/sales`,"")
-}
-export const removeSalesAPI=async(id)=>{
-    return await commonAPI(`DELETE`,`${serverURL}/sales/${id}`,{})
-}
+export const removeProductAPI = async (id,reqHeader) => {
+  return await commonAPI("DELETE", `${serverURL}/product/${id}/delete`, {},reqHeader);
+};
 
 
+export const addSaleAPI = async (reqBody, reqHeader) => {
+  return await commonAPI("POST", `${serverURL}/addsale`, reqBody, reqHeader);
+};
+export const getSalesAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/getsales`, {}, reqHeader);
+};
+export const getSalesDataAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/getsalesdata`, {}, reqHeader);
+};
+export const getTopProductsAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/gettopproducts`, {}, reqHeader);
+};
+export const getMetricsAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/getmetrics`, {}, reqHeader);
+};
 
+export const getAuditLogsAPI = async (reqHeader) => {
+  return await commonAPI("GET", `${serverURL}/getauditlogs`, {}, reqHeader);
+};

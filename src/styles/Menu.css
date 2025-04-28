@@ -1,0 +1,50 @@
+aside {
+  background-color: #f3f4f1;
+  height: 100vh;
+  position: fixed;
+  z-index: 5;
+}
+.sidemenu {
+  transition: width 0.3s ease;
+  background-color: #1d1d32;
+  height:  calc(100vh - 20px);
+  margin: 10px;
+  padding: 15px;
+}
+.logo {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #f3f4f1;
+}
+a {
+  color: #f3f4f1;
+  text-decoration: none;
+  margin: 10px 0px;
+  transition: background-color 0.3s ease;
+}
+a:hover {
+  background-color: rgba(232, 250, 162, 0.2);
+  border-radius: 25px;
+}
+a.active {
+  border-radius: 25px;
+  background-color: #d9f275;
+  color: #1d1d32;
+}
+
+@media (max-width: 768px) {
+  .sidemenu {
+    width: 60px;
+  }
+  .label {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .sidemenu {
+    width: 200px;
+  }
+  a {
+    padding: 6px 8px;
+  }
+}

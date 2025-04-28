@@ -1,175 +1,147 @@
-import React, { useEffect, useState } from 'react'
-import Menu from '../components/Menu'
-import AddProduct from '../components/AddProduct'
-import { getProductAPI, removeProductAPI, updateProductAPI ,geteditProductAPI} from '../services/allAPI'
-import { Modal, Button, FloatingLabel,Form } from 'react-bootstrap';
-import '../Common.css'
+import React, { useEffect, useState } from "react";
+import Menu from "../components/Menu";
+import AddProduct from "../components/AddProduct";
+import { getProductAPI, removeProductAPI } from "../services/allAPI";
+import "../styles/Common.css";
+import EditProduct from "../components/EditProduct";
+import serverURL from "../services/serverURL";
 
 const Products = () => {
-  const[responseFromAdd,setResponsefromAdd]=useState([])
-  const [allProducts,setAllProducts]=useState([])
-  const [editProducts,seteditProducts]=useState({
-        id:"",
-        name:"",
-        price:"",
-        category:"",
-        imageUrl:"",
-        stock:""
-      })
- 
-  
-  const [show, setShow] = useState(false);
-  
-      const handleClose = () => setShow(false);
-      const handleShow = () => setShow(true);
+  const [responseFromAdd, setResponsefromAdd] = useState([]);
+  const [responseFromEdit, setResponsefromEdit] = useState([]);
 
+  const [allProducts, setAllProducts] = useState([]);
+  const [searchkey, setSearchkey] = useState("");
 
-  useEffect(()=>{
-    getProducts()
-  },[responseFromAdd])
-  
-  const fillform=async(id)=>{
-    handleShow()
-    try{
-      const result=await geteditProductAPI(id)
-      console.log(result);
-      if(result.status>=200 && result.status<300){
-        seteditProducts(result.data)
-      }else{
-        console.log("api call failed");
+  const getProducts = async () => {
+    try {
+      const result = await getProductAPI(searchkey);
+      if (result.status == 200) {
+        setAllProducts(result.data);
       }
-    }catch(e){
+    } catch (e) {
       console.log(e);
-      
     }
-  }
-    
+  };
 
-  const editProduct=async()=>{
-     const {name,price,category,imageUrl,stock}=editProducts
-            if(name && price && category && imageUrl && stock){
-              try{
-                const result=await updateProductAPI(editProducts)
-                if(result.status>=200 && result.status<300){
-                  alert("product updated")
-                  getProducts()
-                  handleClose()
-                }else{
-                console.log(result);
-              }
-            }catch(er){
-              console.log(er);
-            } 
-          }else{
-            alert("enter all details")
-          }
-      }
+  useEffect(() => {
+    getProducts();
+  }, [responseFromAdd, responseFromEdit, searchkey]);
 
-  const getProducts=async()=>{
-    try{
-      const result=await getProductAPI()
-      console.log(result);
-      if(result.status>=200 && result.status<300){
-        setAllProducts(result.data)
-      }else{
-        console.log("api call failed");
+  const deleteProduct = async (id) => {
+    const token = sessionStorage.getItem("token");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (token && user.role == "admin") {
+      const reqHeader = {
+        Authorization: `Bearer ${token}`,
+      };
+    try {
+      const result = await removeProductAPI(id,reqHeader);
+      if (result.status == 200) {
+        alert("product deleted");
+        getProducts();
+      } else {
+        alert(result.response.data);
       }
-    }catch(e){
+    } catch (e) {
       console.log(e);
-      
     }
+  } else {
+    console.log("unauthorized");
   }
-  const removeProduct=async(id)=>{
-    try{
-      await removeProductAPI(id)
-      getProducts()
-    }catch(e){
-      console.log(e);
-      
-    }
-  }
+  };
 
   return (
     <>
-    
-      <Menu/>
-      <div className='maindiv w-100' style={{height:'max-height',position:'absolute',backgroundColor:'#15333D'}}>
-      <div style={{margin:'8px',backgroundColor:'#d4edda',minHeight:'97.2vh'}} className='table-responsive p-3 rounded'>
-          <div className='d-flex justify-content-between align-items-center my-3 mx-2'>
-            <h4  style={{color:'#15333D'}} >Products :</h4>
-            <AddProduct setResponsefromAdd={setResponsefromAdd} />
-          </div>
-          <table   className='table shadow table-hover table-striped table-bordered '>
-            <thead >
-              <tr >           
-                <td style={{color:'#15333D'}} className='fw-bolder'>ID</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Image</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Name</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Category</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Price</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Stock</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Action</td>
+      <Menu />
+      <div className="maindiv">
+        <div className="d-flex justify-content-between align-items-center">
+          <form class="w-50">
+            <input
+              onChange={(e) => setSearchkey(e.target.value)}
+              class="form-control "
+              type="text "
+              placeholder="Search Products"
+              style={{
+                boxShadow: "none",
+              }}
+            />
+          </form>
+          <AddProduct setResponsefromAdd={setResponsefromAdd} />
+        </div>
+
+        <h4 className="my-3">Inventory :</h4>
+        <div className="table-responsive">
+          <table className="table table-bordered ">
+            <thead>
+              <tr>
+                <td className="fw-bolder">ID</td>
+                <td className="fw-bolder">Product</td>
+                <td className="fw-bolder">Category</td>
+                <td className="fw-bolder">Price</td>
+                <td className="fw-bolder">Brand</td>
+                <td className="fw-bolder">Stock</td>
+                <td className="fw-bolder">Action</td>
               </tr>
             </thead>
             <tbody>
-              {
-                allProducts?.length>0?
-                allProducts.map((product)=>( 
-                  <tr key={product?.id}>
-                    <td style={{color:'#15333D'}}>{product?.id}</td>
-                    <td style={{color:'#15333D'}}><img width={'90px'} height={'100px'} src={product?.imageUrl} alt="no img" /></td>
-                    <td style={{color:'#15333D'}}>{product?.name}</td>
-                    <td style={{color:'#15333D'}}>{product?.category}</td>
-                    <td style={{color:'#15333D'}}>{product?.price}</td>
-                    {Number(product?.stock)>50?<td style={{color:'#15333D'}}>{product?.stock}</td>
-                   : <td style={{color:'#15333D'}}>{product?.stock} <span style={{fontSize:'13px'}} className='bg-danger py-1 rounded text-light d-block mt-2'>LOW</span></td>}
+              {allProducts?.length > 0 ? (
+                allProducts.map((product, index) => (
+                  <tr className="align-middle" key={product?._id}>
+                    <td>{index + 1}</td>
                     <td>
-                    <button onClick={()=>fillform(product?.id)} className='btn'><i class="fa-solid fa-pen text-warning "></i></button>
-                     <Modal show={show} onHide={handleClose}>
-                           <Modal.Header closeButton>
-                             <Modal.Title>Edit Product</Modal.Title>
-                           </Modal.Header>
-                           <Modal.Body>
-                           <FloatingLabel className='my-2' controlId="floatingInput" label="Name">
-                           <Form.Control value={editProducts.name} onChange={e=>seteditProducts({...editProducts,name:e.target.value})} type="text" placeholder="Product Name" />
-                           </FloatingLabel>
-                           <FloatingLabel className='my-2' controlId="floatingInput" label="Price">
-                           <Form.Control value={editProducts.price} onChange={e=>seteditProducts({...editProducts,price:e.target.value})} type="text" placeholder="Product Price" />
-                           </FloatingLabel>
-                           <FloatingLabel className='my-2' controlId="floatingInput" label="Quantity">
-                           <Form.Control value={editProducts.stock} onChange={e=>seteditProducts({...editProducts,stock:e.target.value})} type="text" placeholder="Product Name" />
-                           </FloatingLabel>
-                           <FloatingLabel className='my-2' controlId="floatingInput" label="Category">
-                           <Form.Control value={editProducts.category} onChange={e=>seteditProducts({...editProducts,category:e.target.value})} type="text" placeholder="Product Name" />
-                           </FloatingLabel>
-                           <FloatingLabel className='my-2' controlId="floatingInput" label="ImageURL">
-                           <Form.Control value={editProducts.imageUrl} onChange={e=>seteditProducts({...editProducts,imageUrl:e.target.value})} type="text" placeholder="Image" />
-                           </FloatingLabel>
-                           </Modal.Body>
-                           <Modal.Footer>
-                             <Button variant="secondary" onClick={handleClose}>
-                               Close
-                             </Button>
-                             <Button variant="primary" onClick={editProduct}>
-                               Save Changes
-                             </Button>
-                           </Modal.Footer>
-                         </Modal>
-                    <button onClick={()=>removeProduct(product?.id)}  className='btn'><i class="fa-solid fa-trash text-danger"></i></button>
+                      <img
+                        className="m-1"
+                        width={"90px"}
+                        height={"90px"}
+                        src={`${serverURL}/uploads/${product?.productImg}`}
+                        alt="no img"
+                      />
+                      {product?.name}
                     </td>
-                  </tr>    
+                    <td>{product?.category}</td>
+                    <td>${product?.price}</td>
+                    <td>{product?.brand}</td>
+                    {Number(product?.stock) > 20 ? (
+                      <td>{product?.stock}</td>
+                    ) : (
+                      <td>
+                        {product?.stock}
+                        <span
+                          style={{
+                            fontSize: "13px",
+                            backgroundColor: "#c2a4f9",
+                          }}
+                          className="rounded text-light d-block p-1 m-1"
+                        >
+                          low
+                        </span>
+                      </td>
+                    )}
+                    <td>
+                      <EditProduct
+                        product={product}
+                        setResponsefromEdit={setResponsefromEdit}
+                      />
+                      <button
+                        onClick={() => deleteProduct(product?._id)}
+                        className="btn"
+                        style={{ color: "#c474bc " }}
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
                 ))
-                :<div className='text-danger  fs-5 text-center'>No Products</div>
-              }
-              
+              ) : (
+                <div className="text-danger  fs-5 text-center">No Products</div>
+              )}
             </tbody>
           </table>
-          
+        </div>
       </div>
-      </div>
-    
     </>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

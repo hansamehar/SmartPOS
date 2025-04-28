@@ -1,25 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, FloatingLabel, Form } from "react-bootstrap";
-import { addProductAPI } from "../services/allAPI";
+import { editProductAPI } from "../services/allAPI";
 
-const AddProduct = ({ setResponsefromAdd }) => {
-  const [productDetails, setProductDetails] = useState({
-    name: "",
-    brand: "",
-    price: "",
-    category: "",
+const EditProduct = ({ product, setResponsefromEdit }) => {
+  const [editProduct, seteditProduct] = useState({
+    id: product._id,
+    name: product.name,
+    price: product.price,
+    category: product.category,
     productImg: "",
-    stock: "",
+    stock: product.stock,
   });
   const [preview, setPreview] = useState("");
 
+  useEffect(() => {
+    if (
+      editProduct.productImg.type == "image/png" ||
+      editProduct.productImg.type == "image/jpeg" ||
+      editProduct.productImg.type == "image/jpg"
+    ) {
+      setPreview(URL.createObjectURL(editProduct.productImg));
+    } else {
+      seteditProduct({ ...editProduct, productImg: "" });
+    }
+  }, [editProduct.productImg]);
+
   const [show, setShow] = useState(false);
+
   const handleClose = () => {
     setShow(false);
     setPreview("");
-    setProductDetails({
+    seteditProduct({
       name: "",
-      brand: "",
       price: "",
       category: "",
       productImg: "",
@@ -28,28 +40,17 @@ const AddProduct = ({ setResponsefromAdd }) => {
   };
   const handleShow = () => setShow(true);
 
-  useEffect(() => {
-    if (
-      productDetails.productImg.type == "image/png" ||
-      productDetails.productImg.type == "image/jpeg" ||
-      productDetails.productImg.type == "image/jpg"
-    ) {
-      setPreview(URL.createObjectURL(productDetails.productImg));
-    } else {
-      setProductDetails({ ...productDetails, productImg: "" });
-    }
-  }, [productDetails.productImg]);
-
-  const saveProduct = async () => {
-    const { name, brand, price, category, productImg, stock } = productDetails;
-    if (name && brand && price && category && stock) {
+  const updateProduct = async () => {
+    const { id, name, price, category, productImg, stock } = editProduct;
+    if (id && name && price && category && stock) {
       const reqBody = new FormData();
       reqBody.append("name", name);
-      reqBody.append("brand", brand);
       reqBody.append("category", category);
       reqBody.append("price", price);
       reqBody.append("stock", stock);
-      reqBody.append("productImg", productImg);
+      preview
+        ? reqBody.append("productImg", productImg)
+        : reqBody.append("productImg", product.productImg);
       const token = sessionStorage.getItem("token");
       const user = JSON.parse(sessionStorage.getItem("user"));
       if (token && user.role == "admin") {
@@ -58,10 +59,11 @@ const AddProduct = ({ setResponsefromAdd }) => {
           Authorization: `Bearer ${token}`,
         };
         try {
-          const result = await addProductAPI(reqBody, reqHeader);
+          const result = await editProductAPI(reqBody, reqHeader, id);
+
           if (result.status == 200) {
-            alert("product added");
-            setResponsefromAdd(result);
+            alert("product edited");
+            setResponsefromEdit(result);
             handleClose();
           } else {
             alert(result.response.data);
@@ -76,27 +78,24 @@ const AddProduct = ({ setResponsefromAdd }) => {
       alert("enter all details");
     }
   };
+
   return (
     <>
       <button
-        style={{ backgroundColor: "#d9f275" }}
-        variant="primary"
         onClick={handleShow}
-        className="btn float-end "
+        className="btn"
+        style={{ color: "#f8c2c5 " }}
       >
-        Add new
+        <i class="fa-solid fa-pen"></i>
       </button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add New Product</Modal.Title>
+          <Modal.Title>Edit Product</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <img
-            height={60}
-            className="m-1 rounded"
-            src={preview && preview}
-            alt=""
-          />
+          {preview && (
+            <img height={60} className="m-1 rounded" src={preview} alt="" />
+          )}
           <FloatingLabel
             className="my-2"
             controlId="floatingInput"
@@ -106,8 +105,8 @@ const AddProduct = ({ setResponsefromAdd }) => {
               type="file"
               autoFocus
               onChange={(e) =>
-                setProductDetails({
-                  ...productDetails,
+                seteditProduct({
+                  ...editProduct,
                   productImg: e.target.files[0],
                 })
               }
@@ -119,18 +118,19 @@ const AddProduct = ({ setResponsefromAdd }) => {
             label="Name"
           >
             <Form.Control
+              value={editProduct.name}
               onChange={(e) =>
-                setProductDetails({ ...productDetails, name: e.target.value })
+                seteditProduct({ ...editProduct, name: e.target.value })
               }
               type="text"
-              placeholder="Product Price"
+              placeholder="Product Name"
             />
           </FloatingLabel>
           <FloatingLabel controlId="floatingSelect" label="Category">
             <Form.Select
               onChange={(e) =>
-                setProductDetails({
-                  ...productDetails,
+                seteditProduct({
+                  ...editProduct,
                   category: e.target.value,
                 })
               }
@@ -156,24 +156,12 @@ const AddProduct = ({ setResponsefromAdd }) => {
           <FloatingLabel
             className="my-2"
             controlId="floatingInput"
-            label="Brand"
-          >
-            <Form.Control
-              onChange={(e) =>
-                setProductDetails({ ...productDetails, brand: e.target.value })
-              }
-              type="text"
-              placeholder="Product Price"
-            />
-          </FloatingLabel>
-          <FloatingLabel
-            className="my-2"
-            controlId="floatingInput"
             label="Price"
           >
             <Form.Control
+              value={editProduct.price}
               onChange={(e) =>
-                setProductDetails({ ...productDetails, price: e.target.value })
+                seteditProduct({ ...editProduct, price: e.target.value })
               }
               type="number"
               placeholder="Product Price"
@@ -185,8 +173,9 @@ const AddProduct = ({ setResponsefromAdd }) => {
             label="Quantity"
           >
             <Form.Control
+              value={editProduct.stock}
               onChange={(e) =>
-                setProductDetails({ ...productDetails, stock: e.target.value })
+                seteditProduct({ ...editProduct, stock: e.target.value })
               }
               type="text"
               placeholder="Product Name"
@@ -197,8 +186,8 @@ const AddProduct = ({ setResponsefromAdd }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={saveProduct}>
-            Save
+          <Button variant="primary" onClick={updateProduct}>
+            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
@@ -206,4 +195,4 @@ const AddProduct = ({ setResponsefromAdd }) => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;

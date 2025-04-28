@@ -1,28 +1,74 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import './Menu.css'
-import { useLocation } from 'react-router-dom'
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/Menu.css";
+import { useLocation } from "react-router-dom";
+import { Authcontext } from "../contexts/ContextAPI";
 
 const Menu = () => {
+  const { user, setUser } = useContext(Authcontext);
+  const navigate = useNavigate();
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
+
+  const logout = () => {
+    sessionStorage.clear();
+    setUser("");
+    navigate("/");
+  };
   return (
     <>
-
-    <div style={{height:'100%',position:'fixed',zIndex:'5',backgroundColor:'#15333D'}}>
-      <aside className='sidemenu d-flex flex-column  rounded ' style={{margin:'8px',height:'97%',backgroundColor:'#d4edda'}}>
-          <div>
-            <img src="" alt="" />
-            <h4 style={{color:'#15333D'}} className='text-center logo mb-4'><i class="fa-regular fa-chart-bar icon"></i><span className='label fw-bold'>FitInventory</span></h4>
+      <aside>
+        <div className="sidemenu d-flex flex-column justify-content-between rounded">
+          <div className="d-flex flex-column">
+            <div>
+              <h5 className="text-center logo mb-4">
+                <i class="fa-solid fa-cash-register p-2"></i>
+                <span className="label">SmartPOS</span>
+              </h5>
+            </div>
+            <Link className={isActive("/home") && "active"} to={"/home"}>
+            <i class="fa-solid fa-chart-simple p-2"></i>
+              <span className="label">Dashboard</span>
+            </Link>
+            <Link className={isActive("/Products") && "active"} to={"/Products"}>
+              <i class="fa-solid fa-desktop p-2"></i>
+              <span className="label">Inventory</span>
+            </Link>
+            {user?.role == "admin" && (
+              <>
+                <Link className={isActive("/users") && "active"} to={"/users"}>
+                  <i class="fa-solid fa-user p-2"></i>
+                  <span className="label">Users</span>
+                </Link>
+                <Link className={isActive("/sales") && "active"} to={"/sales"}>
+                <i class="fa-solid fa-receipt p-2"></i>
+                  <span className="label">Sales</span>
+                </Link>
+                <Link className={isActive("/auditlogs") && "active"} to={"/auditlogs"}>
+                <i class="fa-solid fa-clipboard-list p-2"></i>
+                  <span className="label">Audit Logs</span>
+                </Link>
+              </>
+            )}
+            {user?.role == "cashier" && (
+              <Link className={isActive("/pos") && "active"} to={"/pos"}>
+                <i class="fa-solid fa-cash-register p-2"></i>
+                <span className="label">POS</span>
+              </Link>
+            )}
+            {/* <Link className={isActive("/category") && "active"} to={"/category"}>
+              <i class="fa-solid fa-boxes-stacked p-2"></i>
+              <span className="label">Category</span>
+            </Link> */}
           </div>
-          <Link className={isActive('/') ? 'active text-decoration-none p-2 my-1' : 'text-decoration-none p-2 my-1'} to={'/'}><i class="fa-solid fa-table-cells-large icon"></i><span className='label fw-bold'>Dashboard</span></Link>
-          <Link className={isActive('/category') ? 'active text-decoration-none p-2 my-1' : 'text-decoration-none p-2 my-1'} to={'/category'}><i class="fa-solid fa-boxes-stacked icon"></i><span className='label fw-bold'>Category</span></Link>
-          <Link  className={isActive('/Products') ? 'active text-decoration-none p-2 my-1' : 'text-decoration-none p-2 my-1'} to={'/Products'}><i class="fa-solid fa-shirt icon"></i><span className='label fw-bold'>Products</span></Link>
-          <Link  className={isActive('/sales') ? 'active text-decoration-none p-2 my-1' : 'text-decoration-none p-2 my-1'} to={'/sales'}><i class="fa-solid fa-money-bills icon"></i><span className='label fw-bold'>Sales</span></Link>
-      </aside>
-    </div>
-    </>
-  )
-}
 
-export default Menu
+          <button className="btn text-light text-start" onClick={logout}>
+            <i class="fa-solid fa-right-from-bracket p-2"></i>logout
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+export default Menu;

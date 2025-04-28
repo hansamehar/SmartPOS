@@ -1,87 +1,82 @@
-import React from 'react'
-import Menu from '../components/Menu'
-import AddSales from '../components/AddSales'
-import { getSaleAPI ,removeSalesAPI} from '../services/allAPI'
-import { useState ,useEffect} from 'react'
-import '../Common.css'
-
+import React, { useEffect, useState } from "react";
+import { getSalesAPI } from "../services/allAPI";
+import Menu from "../components/Menu";
+import "../styles/Common.css";
 
 const Sales = () => {
-  const[responseFromAddsale,setResponsefromAddsale]=useState([])
-  
-   const [allSales,setAllSales]=useState([])
-  const getSales=async()=>{
-      try{
-        const result=await getSaleAPI()
-        console.log(result);
-        if(result.status>=200 && result.status<300){
-          setAllSales(result.data)
-        }else{
-          console.log("api call failed");
-        }
-      }catch(e){
-        console.log(e);
-        
-      }
-    }
-    const removeProduct=async(id)=>{
-      try{
-            await removeSalesAPI(id)
-            getSales()
-          }catch(e){
-            console.log(e);
-            
-          }
-        }
-     
+  const [sales, setSales] = useState([]);
+  console.log(sales);
 
-    useEffect(()=>{
-        getSales()
-      },[responseFromAddsale])
-    
+  const getsales = async () => {
+    const token = sessionStorage.getItem("token");
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (token && user.role == "admin") {
+      const reqHeader = {
+        Authorization: `Bearer ${token}`,
+      };
+      try {
+        const result = await getSalesAPI(reqHeader);
+        if (result.status == 200) {
+          setSales(result.data);
+        } else {
+          alert(result.response.data);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.log("admin access only");
+    }
+  };
+
+  useEffect(() => {
+    getsales();
+  }, []);
+
   return (
     <>
-    <Menu/>
-
-    <div className='maindiv w-100' style={{height:'max-height',position:'absolute',backgroundColor:'#15333D'}}>
-       
-        <div style={{margin:'8px',backgroundColor:'#d4edda',minHeight:'97.2vh'}} className='table-responsive  p-3 rounded'>
-        <div className='d-flex justify-content-between align-items-center my-3 mx-2'>
-           <h4  style={{color:'#15333D'}} >Sales :</h4>
-            <AddSales setResponsefromAddsale={setResponsefromAddsale} />
-        </div>
-      <table className='table shadow table-hover table-bordered table-striped '>
+      <Menu />
+      <div className="maindiv">
+        <h4 className="my-3">Sales :</h4>
+        <div className="table-responsive">
+          <table className="table table-bordered ">
             <thead>
-              <tr>           
-                <td style={{color:'#15333D'}} className='fw-bolder'>Product ID</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Customer</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Quantity</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Purchase Price</td>
-                <td style={{color:'#15333D'}} className='fw-bolder'>Action</td>
+              <tr>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Phone</th>
+                <th>Subtotal</th>
+                <th>Discount</th>
+                <th>Grand Total</th>
+                <th>Items</th>
               </tr>
             </thead>
             <tbody>
-            {
-                allSales?.length>0?
-                allSales.map((allSales,index)=>(
-                  <tr key={allSales?.id+index}>
-                    <td style={{color:'#15333D'}}>{allSales.id}</td>
-                    <td style={{color:'#15333D'}}>{allSales.name}</td>
-                    <td style={{color:'#15333D'}}>{allSales.quantity}</td>
-                    <td style={{color:'#15333D'}}>{allSales.price}</td>
-                    <td>
-                    <button onClick={()=>removeProduct(allSales?.id)}  className='btn'><i class="fa-solid fa-trash text-danger"></i></button>
-                    </td>
-                  </tr>    
-                ))
-                :<div className='text-danger fs-5 text-center'>No Sales</div>
-              }
+              {sales.map((sale) => (
+                <tr key={sale._id}>
+                  <td>{new Date(sale.Date).toLocaleString()}</td>
+                  <td>{sale.customer?.name}</td>
+                  <td>{sale.customer?.phone}</td>
+                  <td>${sale.subtotal}</td>
+                  <td>{sale.discount}%</td>
+                  <td>${sale.grandTotal}</td>
+                  <td>
+                    {sale.items.map((item, index) => (
+                      <div style={{ whiteSpace: 'normal' }}>
+                        <div><strong>Product Name:</strong> {item.product?.name}</div>
+                        <div><strong>Quantity:</strong> {item.quantity}</div>
+                        <div><strong>Total:</strong> ${item.total}</div>
+                      </div>
+                    ))}
+                  </td>
+                </tr>
+              ))}
             </tbody>
-        </table>
+          </table>
         </div>
-    </div>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Sales
+export default Sales;

@@ -5,7 +5,6 @@ import "../styles/Common.css";
 
 const Sales = () => {
   const [sales, setSales] = useState([]);
-  console.log(sales);
 
   const getsales = async () => {
     const token = sessionStorage.getItem("token");

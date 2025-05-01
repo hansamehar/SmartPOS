@@ -48,12 +48,9 @@ const TopProductsChart = () => {
           '#ae97e3',
           '#fcc6c2',
           '#effac7',
-          '#537bc4',
-          '#acc236',
-          '#166a8f',
-          '#00a950',
-          '#58595b',
-          '#8549ba',
+          '#fae4d5',
+          '#dcdef2',
+
         ],
         borderColor: '#fff',
         borderWidth: 1,
@@ -71,6 +68,7 @@ const TopProductsChart = () => {
         display: true,
         text: 'Top Selling Products',
         font: { size: 18 },
+        color: '#2f2e44',
       },
     },
   };

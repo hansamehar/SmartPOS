@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Menu from "../components/Menu";
 import AddProduct from "../components/AddProduct";
 import { getProductAPI, removeProductAPI } from "../services/allAPI";
 import "../styles/Common.css";
 import EditProduct from "../components/EditProduct";
 import serverURL from "../services/serverURL";
+import { Authcontext } from "../contexts/ContextAPI";
 
 const Products = () => {
+    const { user, setUser } = useContext(Authcontext);
+  
   const [responseFromAdd, setResponsefromAdd] = useState([]);
   const [responseFromEdit, setResponsefromEdit] = useState([]);
 
@@ -67,7 +70,7 @@ const Products = () => {
               }}
             />
           </form>
-          <AddProduct setResponsefromAdd={setResponsefromAdd} />
+        {user?.role == "admin" &&  <AddProduct setResponsefromAdd={setResponsefromAdd} />}
         </div>
 
         <h4 className="my-3">Inventory :</h4>
@@ -123,13 +126,13 @@ const Products = () => {
                         product={product}
                         setResponsefromEdit={setResponsefromEdit}
                       />
-                      <button
+                      {user?.role == "admin" && <button
                         onClick={() => deleteProduct(product?._id)}
                         className="btn"
                         style={{ color: "#c474bc " }}
                       >
                         <i class="fa-solid fa-trash"></i>
-                      </button>
+                      </button>}
                     </td>
                   </tr>
                 ))

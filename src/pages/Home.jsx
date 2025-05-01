@@ -42,40 +42,110 @@ const Home = () => {
 
   return (
     <>
+      <style>{`
+    .icon {
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      color: #2f2e43;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  `}</style>
       <Menu />
       <div className="maindiv vh-100 overflow-hidden">
         <div class="container-fluid h-100">
           <div class="row h-100">
             <div class="col-md-8 d-flex flex-column">
-              <div class="row ">
-                <div class="col-md-6 mb-3">
-                  <div class="rounded p-3" style={{backgroundColor:'#fff'}}>
-                    <h5>Total Sales</h5>
-                    <h4>{metrics.totalSales}</h4>
+              <div className="row ">
+                <div className="col-md-6 mb-3">
+                  <div
+                    className="rounded p-3 d-flex align-items-center gap-3 bg-white "
+                    
+                  >
+                    <i
+                      className="fas fa-shopping-cart p-2 rounded-circle icon"
+                      style={{ backgroundColor: "#fce5d8" }}
+                    ></i>
+                    <div>
+                      <h6 className="mb-1 text-secondary">Total Sales</h6>
+                      <h4 className="m-0">{metrics.totalSales}</h4>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                  <div class="rounded p-3" style={{backgroundColor:'#fff'}}><h5>Total Revenue</h5>
-                  <h4>{metrics.totalRevenue}</h4></div>
+
+                <div className="col-md-6 mb-3">
+                  <div
+                    className="rounded p-3 d-flex align-items-center gap-3 bg-white"
+                    
+                  >
+                    <i
+                      className="fas fa-dollar-sign p-2 rounded-circle icon"
+                      style={{ backgroundColor: "#effac7" }}
+                    ></i>
+                    <div>
+                      <h6 className="mb-1 text-secondary">Total Revenue</h6>
+                      <h4 className="m-0">${metrics.totalRevenue}</h4>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                  <div class="rounded p-3" style={{backgroundColor:'#fff'}}><h5>Total Customers</h5>
-                  <h4>{metrics.totalCustomers}</h4></div>
+
+                <div className="col-md-6 mb-3">
+                  <div
+                    className="rounded p-3 d-flex align-items-center gap-3 bg-white"
+                    
+                  >
+                    <i
+                      className="fas fa-user p-2 rounded-circle icon"
+                      style={{ backgroundColor: "#dcddf4" }}
+                    ></i>
+                    <div>
+                      <h6 className="mb-1 text-secondary">Total Customers</h6>
+                      <h4 className="m-0">{metrics.totalCustomers}</h4>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                  <div class="rounded p-3" style={{backgroundColor:'#fff'}}><h5>Total Products</h5>
-                  <h4>{metrics.totalProducts}</h4> </div>
+
+                <div className="col-md-6 mb-3">
+                  <div
+                    className="rounded p-3 d-flex align-items-center gap-3 bg-white"
+                    
+                  >
+                    <i
+                      className="fas fa-box p-2 rounded-circle icon"
+                      style={{ backgroundColor: "#fce5d8" }}
+                    ></i>
+                    <div>
+                      <h6 className="mb-1 text-secondary">Total Products</h6>
+                      <h4 className="m-0">{metrics.totalProducts}</h4>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="row flex-grow-1" >
-                <div style={{maxHeight:'330px',backgroundColor:'#fff'}} className="rounded p-4"><SalesChart /></div>
+              <div class="row flex-grow-1 mx-1">
+                <h4 style={{color:'#2f2e43'}}>Daily Sales Trend</h4>
+                <div
+                  style={{ maxHeight: "330px"}}
+                  className="rounded p-4  d-flex justify-content-center bg-white"
+                >
+                  <SalesChart />
+                </div>
               </div>
             </div>
 
             <div class="col-md-4 h-100">
-              <div style={{maxHeight:'300px',backgroundColor:'#fff'}} className="rounded p-2 mb-3"><TopProductsChart /></div>
-              <div><Calendar/></div>
+            <div>
+                <Calendar />
+              </div>
+              <div
+                
+                className="rounded p-2 mt-2 d-flex justify-content-center bg-white"
+              >
+                <TopProductsChart />
+              </div>
+              
             </div>
           </div>
         </div>

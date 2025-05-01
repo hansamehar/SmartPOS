@@ -144,15 +144,10 @@ const Cart = () => {
             <h5>Total</h5>
             <h5>{cart.grandTotal}</h5>
           </div>
-          <div className="d-flex justify-content-between align-items-center border p-1 my-2">
-            <span>Payment Method</span>
-            <span>
-              <i class="fa-solid fa-money-bill"></i>
-            </span>
-          </div>
+          
           <div className="d-flex justify-content-between align-items-center my-2">
             <Receipt cart={cart} />
-            <button onClick={handleShow} className="btn bg-danger">
+            <button style={{backgroundColor:'#1d1d32',color:'#fff'}} onClick={handleShow} className="btn">
             Checkout
             </button>
             <Modal show={show} onHide={handleClose}>
@@ -192,10 +187,10 @@ const Cart = () => {
                 </Form>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={CustomerDetails}>
+                <Button onClick={CustomerDetails}>
                 Complete Sale
                 </Button>
               </Modal.Footer>

@@ -8,9 +8,10 @@ const initialState = {
   customer: {}
 };
 
-const calculateSubtotal = (items) =>
-  items.reduce((total, item) => total + item.price * item.quantity, 0);
-
+const calculateSubtotal = (items) => {
+  const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  return parseFloat(subtotal.toFixed(2)); 
+};
 const calculateGrandTotal = (subtotal, discountPercentage) => {
   const discountAmount = (subtotal * discountPercentage) / 100;
   const total = subtotal - discountAmount;

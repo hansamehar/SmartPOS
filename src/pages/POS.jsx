@@ -47,18 +47,26 @@ const POS = () => {
   const handleAddToCart = (product) => {
     dispatch(additems(product));
   };
+  const scrollBoxStyle = {
+    overflowX: "auto",
+    whiteSpace: "nowrap",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    WebkitOverflowScrolling: "touch",
+    width:'700px'
+  };
 
   return (
     <>
       <Menu />
       <div className="maindiv">
         <div className="position-absolute" >
-          <div className="px-3 py-1" style={{marginRight:'30%',backgroundColor:'#f3f4f1'}}>
+          <div className="px-2 py-1" style={{marginRight:'31%',backgroundColor:'#f3f4f1'}}>
           <div
           className="d-flex justify-content-between align-items-center pb-2"
         >
           <h5>Choose Category</h5>
-          <form class="w-25">
+          <form class="w-50">
             <input
               onChange={(e) => setSearchkey(e.target.value)}
               class="form-control "
@@ -70,13 +78,13 @@ const POS = () => {
             />
           </form>
         </div>
-            <div>
+            <div style={scrollBoxStyle}>
               <button
                 style={{
                   backgroundColor: "#d9f275",
                 }}
                 onClick={() => setSelectedCategory("")}
-                className="btn"
+                className="btn m-2 mb-4"
               >
                 All
               </button>
@@ -85,9 +93,9 @@ const POS = () => {
                   style={
                     selectedCategory == item
                       ? { backgroundColor: "#d9f275" }
-                      : { color: "#1d1d32" }
+                      : { color: "#1d1d32",borderColor:'#1d1d32' }
                   }
-                  className="btn m-1 border "
+                  className="btn m-2 mb-4   "
                   onClick={() => setSelectedCategory(item)}
                   key={index}
                 >
@@ -95,13 +103,13 @@ const POS = () => {
                 </button>
               ))}
             </div>
-            <div className="d-flex gap-3 flex-wrap justify-content-center">
+            <div className="d-flex gap-3 flex-wrap justify-content-between">
               {filteredproducts?.length > 0 ? (
                 filteredproducts.map((product) => (
                   <div
                     onClick={() => handleAddToCart(product)}
                     key={product?._id}
-                    className="rounded border p-2"
+                    className="rounded shadow p-2"
                     style={{ width: "120px", backgroundColor: "white" }}
                   >
                     <img
@@ -109,7 +117,9 @@ const POS = () => {
                       height={"110px"}
                       src={`${serverURL}/uploads/${product?.productImg}`}
                       alt="no img"
+                      
                     />
+                    <hr />
                     <div>
                       <h6>{product?.name}</h6>
                       <span>${product?.price}</span>
@@ -121,7 +131,7 @@ const POS = () => {
               )}
             </div>
           </div>
-          <div className="w-25 position-fixed end-0 top-0 h-100 p-3 d-flex flex-column" style={{ backgroundColor: "white" }}>
+          <div className="w-25 position-fixed end-0 top-0 h-100 p-3 d-flex flex-column bg-white">
             <Cart />
           </div>
         </div>

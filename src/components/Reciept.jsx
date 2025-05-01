@@ -10,7 +10,7 @@ function Receipt({ cart }) {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button style={{backgroundColor:'#d9f275',border:'none'}} onClick={handleShow}>
         Receipt
       </Button>
 

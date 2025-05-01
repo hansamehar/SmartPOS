@@ -50,8 +50,8 @@ const SalesChart = () => {
         label: 'Daily Sales ($)',
         data: salesData.map((entry) => entry.total), 
         backgroundColor: '#2f2e44', 
-        borderColor: '#d9f275', 
-        borderWidth: 1,
+        borderWidth: 0,
+        hoverBackgroundColor: '#d9f275',
       },
     ],
   };
@@ -64,7 +64,7 @@ const SalesChart = () => {
         position: 'top',
       },
       title: {
-        display: true,
+        display: false,
         text: 'Daily Sales Trend',
         font: { size: 18 },
       },
